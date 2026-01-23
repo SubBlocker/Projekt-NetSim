@@ -1,3 +1,6 @@
+#ifndef NETSIM_STORAGE_TYPES_HPP
+#define NETSIM_STORAGE_TYPES_HPP
+
 #include "package.hpp"
 #include <list>
 
@@ -31,14 +34,12 @@ class PackageQueue : public IPackageQueue {
 public:
     PackageQueue(PackageQueueType type) : type_(type) {}
 
-    void push(Package&& package) override {
-        container_.push_back(std::move(package));
-    }
+    void push(Package&& package) override;
+    Package pop() override; 
 
     bool empty() const override { return container_.empty(); }
     std::size_t size() const override { return container_.size(); }
 
-    Package pop() override; 
 
     PackageQueueType get_queue_type() const override { return type_; }
 
@@ -51,3 +52,5 @@ private:
     PackageQueueType type_;
     std::list<Package> container_; 
 };
+
+#endif
