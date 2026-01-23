@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
+
+project(NetSim)
+
 set(CMAKE_CXX_STANDARD 23)
 
 set(PROJECT_ID NETSIM)
