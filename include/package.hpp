@@ -1,5 +1,6 @@
 #ifndef NETSIM_PACKAGE_HPP
 #define NETSIM_PACKAGE_HPP
+
 #include "types.hpp"
 #include <set>
 
