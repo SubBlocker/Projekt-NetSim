@@ -68,9 +68,8 @@ public:
 
 protected:
     void push_package(Package&& p);
-
-private:
     std::optional<Package> buffer_ = std::nullopt;
+
 };
 
 
