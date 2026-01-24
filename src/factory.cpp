@@ -51,7 +51,6 @@ bool has_reachable_storehouse(const PackageSender* sender,
     throw std::logic_error("No reachable storehouse");
 }
 
-// === NOWE: funkcjonalność usuwania receivera przeniesiona do .cpp ===
 void Factory::remove_receiver_from_preferences(IPackageReceiver* receiver) {
     for (auto& ramp : cont_r) {
         ramp.receiver_preferences_.remove_receiver(receiver);
@@ -64,10 +63,10 @@ void Factory::remove_receiver_from_preferences(IPackageReceiver* receiver) {
 void Factory::remove_worker(ElementID id) {
     auto it = cont_w.find_by_id(id);
     if (it == cont_w.end()) {
-        return; // albo: throw std::out_of_range("Worker not found");
+        return;
     }
 
-    IPackageReceiver* receiver = &(*it); // Worker implementuje IPackageReceiver
+    IPackageReceiver* receiver = &(*it); 
     remove_receiver_from_preferences(receiver);
 
     cont_w.remove_by_id(id);
@@ -76,10 +75,10 @@ void Factory::remove_worker(ElementID id) {
 void Factory::remove_storehouse(ElementID id) {
     auto it = cont_s.find_by_id(id);
     if (it == cont_s.end()) {
-        return; // albo: throw std::out_of_range("Storehouse not found");
+        return; 
     }
 
-    IPackageReceiver* receiver = &(*it); // Storehouse implementuje IPackageReceiver
+    IPackageReceiver* receiver = &(*it); 
     remove_receiver_from_preferences(receiver);
 
     cont_s.remove_by_id(id);

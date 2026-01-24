@@ -50,8 +50,6 @@ private:
 
 class Factory {
 private:
-    // Helper usuwający receivera z preferencji ramp i workerów.
-    // Implementacja jest w factory.cpp (żeby "funkcjonalność była w cpp").
     void remove_receiver_from_preferences(IPackageReceiver* receiver);
 
     NodeCollection<Ramp> cont_r;
