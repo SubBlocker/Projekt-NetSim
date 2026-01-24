@@ -90,10 +90,10 @@ private:
 
 class Worker : public PackageSender, public IPackageReceiver {
 public:
-    Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q);
+    Worker(ElementID id, TimeOffset process_time, std::unique_ptr<IPackageQueue> q);
 
     void do_work(Time t);
-    TimeOffset get_processing_duration() const { return pd_; }
+    TimeOffset get_processing_duration() const { return process_time_; }
     Time get_package_processing_start_time() const { return start_time_; }
 
     void receive_package(Package&& p) override { q_->push(std::move(p)); }
@@ -110,7 +110,7 @@ public:
 
 private:
     ElementID id_;
-    TimeOffset pd_;
+    TimeOffset process_time_;
     std::unique_ptr<IPackageQueue> q_;
     std::optional<Package> currently_processed_ = std::nullopt;
     Time start_time_ = 0;
