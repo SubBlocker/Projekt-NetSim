@@ -13,6 +13,11 @@ enum class ReceiverType {
     STOREHOUSE
 };
 
+enum class NodeColor {
+    UNVISITED,
+    VISITED,
+    VERIFIED
+};
 
 class IPackageReceiver {
 public:
@@ -23,12 +28,11 @@ public:
     virtual IPackageStockpile::const_iterator end() const = 0;
     virtual IPackageStockpile::const_iterator cbegin() const = 0;
     virtual IPackageStockpile::const_iterator cend() const = 0;
-
+    virtual ReceiverType get_receiver_type() const {
+        return ReceiverType::WORKER;
+    };
     virtual ~IPackageReceiver() = default;
 
-    #if (defined EXERCISE_ID && EXERCISE_ID != EXERCISE_ID_NODES)
-    virtual ReceiverType get_receiver_type() const = 0;
-    #endif
 };
 
 
@@ -37,7 +41,8 @@ public:
     using preferences_t = std::map<IPackageReceiver*, double>;
     using const_iterator = preferences_t::const_iterator;
 
-    ReceiverPreferences(ProbabilityGenerator pg = probability_generator) : pg_(std::move(pg)) {}
+    explicit ReceiverPreferences(ProbabilityGenerator pg = probability_generator)
+        : pg_(std::move(pg)) {}
 
     void add_receiver(IPackageReceiver* r);
     void remove_receiver(IPackageReceiver* r);
@@ -96,6 +101,7 @@ public:
     Worker(ElementID id, TimeOffset process_time, std::unique_ptr<IPackageQueue> q);
 
     void do_work(Time t);
+
     TimeOffset get_processing_duration() const { return process_time_; }
     Time get_package_processing_start_time() const { return start_time_; }
 
@@ -107,14 +113,15 @@ public:
     IPackageStockpile::const_iterator cbegin() const override { return q_->cbegin(); }
     IPackageStockpile::const_iterator cend() const override { return q_->cend(); }
 
-    #if (defined EXERCISE_ID && EXERCISE_ID != EXERCISE_ID_NODES)
     ReceiverType get_receiver_type() const override { return ReceiverType::WORKER; }
-    #endif
+
+    IPackageQueue* get_queue() const { return q_.get(); }
 
 private:
     ElementID id_;
     TimeOffset process_time_;
     std::unique_ptr<IPackageQueue> q_;
+
     std::optional<Package> currently_processed_ = std::nullopt;
     Time start_time_ = 0;
 };
@@ -122,20 +129,15 @@ private:
 
 class Storehouse : public IPackageReceiver {
 public:
-    Storehouse(ElementID id, std::unique_ptr<IPackageStockpile> d = std::make_unique<PackageQueue>(PackageQueueType::LIFO))
-    : id_(id), d_(std::move(d)) {}
-
-    void receive_package(Package&& p) override { d_->push(std::move(p)); }
+    Storehouse(ElementID id,std::unique_ptr<IPackageStockpile> d = std::make_unique<PackageQueue>(PackageQueueType::FIFO)) : id_(id), d_(std::move(d)) {}
+    void receive_package(Package&& p) override;
     ElementID get_id() const override { return id_; }
-
-    IPackageStockpile::const_iterator begin() const override { return d_->begin(); }
-    IPackageStockpile::const_iterator end() const override { return d_->end(); }
+    ReceiverType get_receiver_type() const override { return ReceiverType::STOREHOUSE; };
     IPackageStockpile::const_iterator cbegin() const override { return d_->cbegin(); }
     IPackageStockpile::const_iterator cend() const override { return d_->cend(); }
-
-    #if (defined EXERCISE_ID && EXERCISE_ID != EXERCISE_ID_NODES)
-    ReceiverType get_receiver_type() const override { return ReceiverType::STOREHOUSE; }
-    #endif
+    IPackageStockpile::const_iterator begin() const override { return d_->begin(); }
+    IPackageStockpile::const_iterator end() const override { return d_->end(); }
+    IPackageStockpile* get_queue() const { return d_.get(); }
 
 private:
     ElementID id_;
