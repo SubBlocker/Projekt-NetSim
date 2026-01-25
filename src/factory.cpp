@@ -28,7 +28,6 @@ bool has_reachable_storehouse(const PackageSender* sender,
             node_colors[sender] = NodeColor::VERIFIED;
             return true;
         } else if (receiver.first->get_receiver_type() == ReceiverType::WORKER) {
-            // receiver.first jest IPackageReceiver* wskazującym na Worker
             auto* worker_ptr = dynamic_cast<Worker*>(receiver.first);
             if (worker_ptr == nullptr) continue;
 
@@ -130,7 +129,6 @@ bool Factory::is_consistent() const {
     return true;
 }
 
-// ===== PARSOWANIE / ZAPIS =====
 
 static std::vector<std::string> character_split(const std::string& splittable_str, char delimiter) {
     std::stringstream parameter_stream(splittable_str);
@@ -278,8 +276,8 @@ Factory load_factory_structure(std::istream& is) {
 
 static std::string queue_type_str(PackageQueueType package_queue_type) {
     switch (package_queue_type) {
-        case FIFO: return "FIFO";
-        case LIFO: return "LIFO";
+        case PackageQueueType::FIFO: return "FIFO";
+        case PackageQueueType::LIFO: return "LIFO";
     }
     return {};
 }
