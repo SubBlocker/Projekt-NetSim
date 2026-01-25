@@ -67,7 +67,7 @@ public:
     ReceiverPreferences receiver_preferences_;
 
 protected:
-    void push_package(Package&& p);
+    void push_package(Package&& p) { buffer_.emplace(p.get_id()); };
 
 private:
     std::optional<Package> buffer_ = std::nullopt;
@@ -85,6 +85,8 @@ public:
 private:
     ElementID id_;
     TimeOffset di_;
+    Time t_;
+    std::optional<Package> buffer_;
 };
 
 
