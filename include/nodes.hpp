@@ -1,6 +1,8 @@
 #ifndef NETSIM_NODES_HPP
 #define NETSIM_NODES_HPP
 
+#define EXERCISE_ID 3
+
 #include <memory>
 #include <optional>
 #include <map>
@@ -13,6 +15,9 @@ enum class ReceiverType {
     STOREHOUSE
 };
 
+enum class NodeColor {
+    UNVISITED, VISITED, VERIFIED
+};
 
 class IPackageReceiver {
 public:
@@ -101,6 +106,7 @@ public:
 
     void receive_package(Package&& p) override { q_->push(std::move(p)); }
     ElementID get_id() const override { return id_; }
+    IPackageQueue* get_queue() const { return q_.get(); }
 
     IPackageStockpile::const_iterator begin() const override { return q_->begin(); }
     IPackageStockpile::const_iterator end() const override { return q_->end(); }
