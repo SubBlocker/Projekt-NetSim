@@ -113,6 +113,8 @@ public:
     IPackageStockpile::const_iterator cbegin() const override { return q_->cbegin(); }
     IPackageStockpile::const_iterator cend() const override { return q_->cend(); }
 
+    const std::optional<Package>& get_processing_buffer() const {return currently_processed_;}
+
     #if (defined EXERCISE_ID && EXERCISE_ID != EXERCISE_ID_NODES)
     ReceiverType get_receiver_type() const override { return ReceiverType::WORKER; }
     #endif
@@ -138,6 +140,9 @@ public:
     IPackageStockpile::const_iterator end() const override { return d_->end(); }
     IPackageStockpile::const_iterator cbegin() const override { return d_->cbegin(); }
     IPackageStockpile::const_iterator cend() const override { return d_->cend(); }
+    IPackageStockpile* get_queue() const { return d_.get(); }
+
+
 
     #if (defined EXERCISE_ID && EXERCISE_ID != EXERCISE_ID_NODES)
     ReceiverType get_receiver_type() const override { return ReceiverType::STOREHOUSE; }
